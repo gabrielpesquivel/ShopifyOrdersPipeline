@@ -1,4 +1,4 @@
-# BootInk Gangsheet Generator
+# Gangsheet Generator
 
 Automated gangsheet generation tool for Shopify store owners selling custom stickers, decals, and printed products.
 
@@ -19,7 +19,7 @@ This tool automatically converts Shopify order exports into print-ready PDF gang
 - **Smart Filtering**: Excludes non-printable items (like "Priming Wipe") automatically
 
 ### Production Efficiency
-- **Optimized Layouts**: Smart packing algorithm maximizes sheet usage
+- **Optimized Layouts**: Smart packing algorithm maximises sheet usage
 - **Multi-Page Support**: Automatically creates new pages when sheets fill up
 - **Print-Ready Output**: High-quality PDF output ready for DTF, sublimation, or vinyl printing
 
@@ -166,14 +166,6 @@ Items containing "Priming Wipe" are automatically excluded from printing.
 - matplotlib: Text-to-path conversion
 - numpy: Numerical operations
 
-## Tips for Best Results
-
-1. **Consistent Naming**: Use consistent product naming conventions in Shopify
-2. **Test First**: Run a test with a small order to verify output
-3. **Check Output**: Always preview PDFs before sending to production
-4. **Backup CSVs**: Keep copies of your order CSVs for records
-5. **Calibrate Sizes**: Adjust font sizes in config.py to match your product specs
-
 ## Troubleshooting
 
 ### "No CSV files found"
@@ -188,25 +180,3 @@ Items containing "Priming Wipe" are automatically excluded from printing.
 - Check that product names follow the expected format
 - Verify the item isn't being filtered (like "Priming Wipe")
 - Review console output for skipped items
-
-## Future Enhancements
-
-Potential improvements for future versions:
-- Color support (currently prints in black)
-- Custom color parsing from product names
-- Web interface for easier operation
-- Size detection based on product variants
-- Rotation optimization for better packing
-- Support for different page sizes
-
-## License
-
-This tool is designed for BootInk operations. Modify and customize as needed for your business.
-
-## Support
-
-For issues or questions about this tool, refer to the inline code comments or contact your development team.
-
----
-
-**Built for efficiency. Designed for scale. Made for Shopify store owners who value their time.**
