@@ -16,9 +16,10 @@ GAP = 25 * MM_TO_PTS  # Grid line every 25mm
 
 # Product Specs
 # Sizes based on asset_specs.md (heights in mm)
+# All have 0.5mm offset outline for peeling bubble
 SIZE_MAP = {
-    'Words': {'font_size': 4 * MM_TO_PTS, 'offset_mm': 1.5, 'target_height_mm': 4},      # Dates + Words over 3 characters: 4mm
-    'Initials': {'font_size': 5 * MM_TO_PTS, 'offset_mm': 1.5, 'target_height_mm': 5},    # Initials + Numbers: 5mm
-    'Flags': {'font_size': 6 * MM_TO_PTS, 'offset_mm': 2.0, 'target_height_mm': 6},       # Flags: 6mm
-    'Symbols': {'font_size': 10 * MM_TO_PTS, 'offset_mm': 2.5, 'target_height_mm': 10}    # Symbols: 10mm
+    'Words': {'font_size': 4 * MM_TO_PTS, 'offset_mm': 0.5, 'target_height_mm': 4},      # Dates + Words over 3 characters: 4mm
+    'Initials': {'font_size': 5 * MM_TO_PTS, 'offset_mm': 0.5, 'target_height_mm': 5},    # Initials + Numbers: 5mm
+    'Flags': {'font_size': 6 * MM_TO_PTS, 'offset_mm': 0.5, 'target_height_mm': 6},       # Flags: 6mm
+    'Symbols': {'font_size': 10 * MM_TO_PTS, 'offset_mm': 0.5, 'target_height_mm': 10}    # Symbols: 10mm
 }

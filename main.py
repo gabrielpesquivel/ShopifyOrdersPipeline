@@ -93,9 +93,9 @@ def process_orders():
                 final_text = affinity.translate(text_geo, xoff=x, yoff=y)
                 final_bg = affinity.translate(bg_geo, xoff=x, yoff=y)
                 
-                # Draw Background (White 4% opacity)
-                # CMYK(0,0,0,0) is white
-                pdf_utils.draw_shapely_poly(c, final_bg, CMYKColor(0,0,0,0), alpha=0.04)
+                # Draw Background (White 3% opacity) - 0.5mm offset outline for peeling bubble
+                # CMYK(0,0,0,0) is white (#ffffff)
+                pdf_utils.draw_shapely_poly(c, final_bg, CMYKColor(0,0,0,0), alpha=0.03)
 
                 # Draw Text (Black #221f1f - RGB(34,31,31) = CMYK(0,0.09,0.09,0.87))
                 pdf_utils.draw_shapely_poly(c, final_text, CMYKColor(0, 0.09, 0.09, 0.87), alpha=1.0)
