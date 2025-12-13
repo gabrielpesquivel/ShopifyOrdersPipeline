@@ -5,19 +5,20 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INPUT_DIR = os.path.join(BASE_DIR, 'input_csv')
 OUTPUT_DIR = os.path.join(BASE_DIR, 'output_sheet')
 ASSETS_DIR = os.path.join(BASE_DIR, 'assets')
-FONT_PATH = os.path.join(ASSETS_DIR, 'Arial_Bold.ttf')
+FONT_PATH = os.path.join(ASSETS_DIR, 'Industry_Ultra.ttf')
 
 # Page Specs (A4 in points)
 MM_TO_PTS = 2.83465
 PAGE_WIDTH = 210 * MM_TO_PTS
 PAGE_HEIGHT = 297 * MM_TO_PTS
 MARGIN = 10 * MM_TO_PTS
-GAP = 5 * MM_TO_PTS  # Space between stickers
+GAP = 25 * MM_TO_PTS  # Grid line every 25mm
 
 # Product Specs
-# Add your specific product sizes here
+# Sizes based on asset_specs.md (heights in mm)
 SIZE_MAP = {
-    'Small': {'font_size': 30, 'offset_mm': 1.5},
-    'Medium': {'font_size': 50, 'offset_mm': 2.0},
-    'Large': {'font_size': 80, 'offset_mm': 3.0}
+    'Words': {'font_size': 4 * MM_TO_PTS, 'offset_mm': 1.5, 'target_height_mm': 4},      # Dates + Words over 3 characters: 4mm
+    'Initials': {'font_size': 5 * MM_TO_PTS, 'offset_mm': 1.5, 'target_height_mm': 5},    # Initials + Numbers: 5mm
+    'Flags': {'font_size': 6 * MM_TO_PTS, 'offset_mm': 2.0, 'target_height_mm': 6},       # Flags: 6mm
+    'Symbols': {'font_size': 10 * MM_TO_PTS, 'offset_mm': 2.5, 'target_height_mm': 10}    # Symbols: 10mm
 }

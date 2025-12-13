@@ -4,6 +4,32 @@ from shapely import affinity
 from reportlab.lib.colors import CMYKColor
 
 from src import config, geometry, pdf_utils, layout
+import re
+
+def determine_size_category(text):
+    """
+    Determine size category based on text content according to asset_specs.md:
+    - Flags: 6mm
+    - Symbols: 10mm
+    - Initials + Numbers: 5mm (1-2 characters)
+    - Dates + Words over 3 characters: 4mm
+    """
+    text = text.strip()
+
+    # Check for flag emojis (country flags are in range U+1F1E6-U+1F1FF)
+    if any('\U0001F1E6' <= char <= '\U0001F1FF' for char in text):
+        return 'Flags'
+
+    # Check for symbols (single character that's not alphanumeric)
+    if len(text) == 1 and not text.isalnum():
+        return 'Symbols'
+
+    # Check for initials or numbers (1-2 characters of letters/numbers)
+    if len(text) <= 2 and text.replace(' ', '').isalnum():
+        return 'Initials'
+
+    # Everything else (dates, words over 3 characters)
+    return 'Words'
 
 def process_orders():
     # 1. Find CSV files
@@ -45,12 +71,12 @@ def process_orders():
             if not text or text.strip() == '' or 'Priming Wipe' in lineitem_name:
                 continue
 
-            # Default size to Medium (you can add logic to determine size based on product name if needed)
-            size = 'Medium'
+            # Determine size category based on text content
+            size = determine_size_category(text)
             qty = int(row.get('Lineitem quantity', 1))
-            
+
             # Get Config for this size
-            size_cfg = config.SIZE_MAP.get(size, config.SIZE_MAP['Medium'])
+            size_cfg = config.SIZE_MAP.get(size, config.SIZE_MAP['Words'])
             
             # Generate Geometry (Once per unique design)
             # Optimization: If many rows have same text/size, you could cache this
@@ -70,10 +96,9 @@ def process_orders():
                 # Draw Background (White 4% opacity)
                 # CMYK(0,0,0,0) is white
                 pdf_utils.draw_shapely_poly(c, final_bg, CMYKColor(0,0,0,0), alpha=0.04)
-                
-                # Draw Text (Black)
-                # Parse color from CSV here if needed
-                pdf_utils.draw_shapely_poly(c, final_text, CMYKColor(0,0,0,1), alpha=1.0)
+
+                # Draw Text (Black #221f1f - RGB(34,31,31) = CMYK(0,0.09,0.09,0.87))
+                pdf_utils.draw_shapely_poly(c, final_text, CMYKColor(0, 0.09, 0.09, 0.87), alpha=1.0)
 
         # Save PDF
         c.save()
