@@ -13,6 +13,7 @@ PAGE_WIDTH = 210 * MM_TO_PTS
 PAGE_HEIGHT = 297 * MM_TO_PTS
 MARGIN = 10 * MM_TO_PTS
 GAP = 25 * MM_TO_PTS  # Grid line every 25mm
+GRID_SIZE = 25 * MM_TO_PTS  # One grid square = 25mm
 
 # Product Specs
 # Sizes based on asset_specs.md (heights in mm)

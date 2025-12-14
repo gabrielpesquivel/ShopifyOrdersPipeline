@@ -91,27 +91,40 @@ def text_to_shapely(text, font_path, font_size):
         buffered = [p.buffer(0) for p in result_polys if p.is_valid]
         return unary_union(buffered) if buffered else result_polys[0]
 
-def create_sticker_geometry(text, font_path, size_config):
-    """Returns (text_shape, background_shape, width, height)."""
-    
+def create_sticker_geometry(text, font_path, size_config, rect_width, rect_height):
+    """
+    Returns (text_shape, background_shape, rectangle_width, rectangle_height).
+    Text and background are centered within the specified rectangle dimensions.
+
+    Args:
+        text: Text string to render
+        font_path: Path to font file
+        size_config: Size configuration dict with font_size and offset_mm
+        rect_width: Target rectangle width in points
+        rect_height: Target rectangle height in points
+    """
+
     font_size_pts = size_config['font_size']
     offset_pts = size_config['offset_mm'] * config.MM_TO_PTS
-    
+
     # 1. Get Base Text
     text_shape = text_to_shapely(text, font_path, font_size_pts)
-    
+
     # 2. Create Offset (Background)
     # join_style=1 (Round), resolution=16 (Smoothness)
     bg_shape = text_shape.buffer(offset_pts, join_style=1, resolution=16)
-    
-    # 3. Normalize to Origin (0,0) based on the background bounds
+
+    # 3. Get bounds of the background
     minx, miny, maxx, maxy = bg_shape.bounds
-    
-    # Shift both shapes so the bottom-left of the background is at (0,0)
-    text_shape = affinity.translate(text_shape, xoff=-minx, yoff=-miny)
-    bg_shape = affinity.translate(bg_shape, xoff=-minx, yoff=-miny)
-    
-    width = maxx - minx
-    height = maxy - miny
-    
-    return text_shape, bg_shape, width, height
+    bg_width = maxx - minx
+    bg_height = maxy - miny
+
+    # 4. Center the text and background within the rectangle
+    # Calculate offset to center both horizontally and vertically
+    center_x = (rect_width - bg_width) / 2 - minx
+    center_y = (rect_height - bg_height) / 2 - miny
+
+    text_shape = affinity.translate(text_shape, xoff=center_x, yoff=center_y)
+    bg_shape = affinity.translate(bg_shape, xoff=center_x, yoff=center_y)
+
+    return text_shape, bg_shape, rect_width, rect_height

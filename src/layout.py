@@ -10,14 +10,15 @@ class LayoutManager:
 
     def add_item(self, width, height):
         """
-        Calculates position for next item. 
+        Calculates position for next item.
         Returns (x, y) or triggers new page if full.
+        Rectangles touch edge-to-edge for maximum space utilization.
         """
         # Check if item fits in current row
         if self.cursor_x + width > config.PAGE_WIDTH - config.MARGIN:
-            # Move to next row
+            # Move to next row (no gap - rectangles touch)
             self.cursor_x = config.MARGIN
-            self.cursor_y -= (self.row_height + config.GAP)
+            self.cursor_y -= self.row_height
             self.row_height = 0
 
         # Check if item fits on page vertically
@@ -34,9 +35,9 @@ class LayoutManager:
         draw_x = self.cursor_x
         draw_y = self.cursor_y - height
 
-        # Update cursor for next item
-        self.cursor_x += width + config.GAP
+        # Update cursor for next item (no gap - rectangles touch)
+        self.cursor_x += width
         if height > self.row_height:
             self.row_height = height
-            
+
         return draw_x, draw_y

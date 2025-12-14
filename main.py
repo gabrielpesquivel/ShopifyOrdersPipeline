@@ -6,6 +6,19 @@ from reportlab.lib.colors import CMYKColor
 from src import config, geometry, pdf_utils, layout
 import re
 
+def determine_grid_squares(text):
+    """
+    Determine how many grid squares (25mm each) the rectangle should span.
+    Based on specs: <=3 chars = 1 square, >3 chars = 2 squares, >10 chars = 3 squares
+    """
+    char_count = len(text.strip())
+    if char_count <= 3:
+        return 1  # 25mm
+    elif char_count <= 10:
+        return 2  # 50mm
+    else:
+        return 3  # 75mm
+
 def determine_size_category(text):
     """
     Determine size category based on text content according to asset_specs.md:
@@ -53,7 +66,7 @@ def process_orders():
         # Setup PDF
         c = pdf_utils.setup_canvas(output_path, (config.PAGE_WIDTH, config.PAGE_HEIGHT))
         layout_mgr = layout.LayoutManager(c)
-        
+
         # Process Rows
         for index, row in df.iterrows():
             # Parse the lineitem name (format: "Category - TEXT / COLOR")
@@ -77,22 +90,30 @@ def process_orders():
 
             # Get Config for this size
             size_cfg = config.SIZE_MAP.get(size, config.SIZE_MAP['Words'])
-            
+
+            # Determine rectangle dimensions based on character count
+            grid_squares = determine_grid_squares(text)
+            rect_width = grid_squares * config.GRID_SIZE
+            rect_height = config.GRID_SIZE  # Height is always 1 grid square (25mm)
+
             # Generate Geometry (Once per unique design)
-            # Optimization: If many rows have same text/size, you could cache this
+            # Text will be centered within the rectangle
             text_geo, bg_geo, w, h = geometry.create_sticker_geometry(
-                text, config.FONT_PATH, size_cfg
+                text, config.FONT_PATH, size_cfg, rect_width, rect_height
             )
-            
+
             # Add to Sheet (Repeat for Quantity)
             for _ in range(qty):
                 # Get Position
                 x, y = layout_mgr.add_item(w, h)
-                
+
+                # Draw magenta cutting rectangle
+                pdf_utils.draw_cutting_rectangle(c, x, y, w, h)
+
                 # Move Geometry to Position
                 final_text = affinity.translate(text_geo, xoff=x, yoff=y)
                 final_bg = affinity.translate(bg_geo, xoff=x, yoff=y)
-                
+
                 # Draw Background (White 3% opacity) - 0.5mm offset outline for peeling bubble
                 # CMYK(0,0,0,0) is white (#ffffff)
                 pdf_utils.draw_shapely_poly(c, final_bg, CMYKColor(0,0,0,0), alpha=0.03)
